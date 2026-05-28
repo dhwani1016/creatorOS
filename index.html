@@ -149,7 +149,7 @@
         <div class="table-header-row">
           <h2 style="font-family: var(--font-display); font-size: 1.25rem;">Reels Details & Performance</h2>
           <div class="search-bar">
-            <input type="text" id="search-input" placeholder="Search by title...">
+            <input type="text" id="search-input" placeholder="Search by caption...">
           </div>
           <div class="select-wrapper">
             <select id="category-filter">
@@ -163,7 +163,7 @@
             <thead>
               <tr>
                 <th data-sort="index" id="th-index" style="width: 50px;">#</th>
-                <th data-sort="title" id="th-title">Title / Caption</th>
+                <th data-sort="title" id="th-title">Reel Caption</th>
                 <th data-sort="type" id="th-type">Format</th>
                 <th data-sort="category" id="th-category">Category</th>
                 <th data-sort="views" id="th-views">Views ▼</th>
@@ -196,9 +196,9 @@
           </div>
 
           <div style="margin-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 1rem;">
-            <h4 style="font-size: 0.85rem; margin-bottom: 0.5rem; color: var(--text-muted);">Expected CSV Columns:</h4>
+            <h4 style="font-size: 0.85rem; margin-bottom: 0.5rem; color: var(--text-muted);">Source columns should include:</h4>
             <code style="display: block; background: rgba(0, 0, 0, 0.2); padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.75rem; color: var(--accent-primary); font-family: monospace;">
-              Title, Views, Likes, Comments, Shares, Category, Type, Date
+              Caption, Views, Likes, Comments, Shares, Category, Type, Date
             </code>
           </div>
         </div>
@@ -210,8 +210,8 @@
           
           <form id="post-form">
             <div class="form-group" style="margin-bottom: 1rem;">
-              <label for="post-title">Post Title / Reel Hook</label>
-              <input type="text" id="post-title" required placeholder="5 VS Code Shortcuts that feel illegal to know">
+              <label for="post-title">Reel Caption / Hook</label>
+              <input type="text" id="post-title" required placeholder="Enter the Reel caption or hook...">
             </div>
 
             <div class="form-group" style="margin-bottom: 1rem;">

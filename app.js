@@ -540,12 +540,14 @@ window.AppState = {
     // Clean username and profile URL extraction
     let username = input.trim();
     let profileUrl = 'https://www.instagram.com/';
+    let isSinglePost = false;
 
     if (username.includes('instagram.com/')) {
       const parts = username.replace(/https?:\/\/(www\.)?instagram\.com\//i, '').split('/');
       if (parts[0] === 'reel' || parts[0] === 'p' || parts[0] === 'tv') {
         username = 'creator';
         profileUrl = input; // fallback to the post itself!
+        isSinglePost = true;
       } else {
         username = parts[0].split('?')[0];
         profileUrl = `https://www.instagram.com/${username}/`;
@@ -558,6 +560,12 @@ window.AppState = {
     if (!username) {
       this.showToast('Invalid Instagram username or URL. Use format: instagram.com/username', 'error');
       return;
+    }
+
+    // Prompt user for the Reel caption if scanning a single post URL
+    let userCaption = '';
+    if (isSinglePost) {
+      userCaption = prompt("Enter the caption of this Reel (to recognize it on your dashboard):") || '';
     }
 
     // 2. Open Modal Overlay
@@ -589,10 +597,11 @@ window.AppState = {
           modal.style.display = 'none';
           
           // Generate customized Instagram data matching niche
-          const customPosts = Generator.generateNicheData(username, 'instagram', null, profileUrl);
+          const customPosts = Generator.generateNicheData(username, 'instagram', null, profileUrl, userCaption);
           
           this.scannedUsername = username;
           this.scannedProfileUrl = profileUrl;
+          this.scannedUserCaption = userCaption;
           this.posts = customPosts;
           this.assignDisplayIndices();
           this.saveCurrentData();
@@ -1044,7 +1053,7 @@ window.AppState = {
       let username = this.scannedUsername || 'creator';
       let profileUrl = this.scannedProfileUrl || 'https://www.instagram.com/creator/';
       
-      const customPosts = Generator.generateNicheData(username, 'instagram', nicheVal, profileUrl);
+      const customPosts = Generator.generateNicheData(username, 'instagram', nicheVal, profileUrl, this.scannedUserCaption || '');
       this.posts = customPosts;
       this.assignDisplayIndices();
       this.saveCurrentData();
@@ -1082,8 +1091,14 @@ window.AppState = {
 
       const headers = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/["']/g, ''));
       
-      // Look for standard column indexes (checking for caption/title/name/text columns)
-      const titleIdx = headers.findIndex(h => h.includes('title') || h.includes('name') || h.includes('caption') || h.includes('text') || h.includes('content'));
+      // Prioritize caption/text/content headers over generic title/name headers to extract real post content
+      let titleIdx = headers.findIndex(h => h.includes('caption'));
+      if (titleIdx === -1) {
+        titleIdx = headers.findIndex(h => h.includes('text') || h.includes('content'));
+      }
+      if (titleIdx === -1) {
+        titleIdx = headers.findIndex(h => h.includes('title') || h.includes('name'));
+      }
       const viewsIdx = headers.findIndex(h => h.includes('views') || h.includes('view'));
       const likesIdx = headers.findIndex(h => h.includes('likes') || h.includes('like'));
       const commentsIdx = headers.findIndex(h => h.includes('comments') || h.includes('comment'));
@@ -1094,7 +1109,7 @@ window.AppState = {
       const urlIdx = headers.findIndex(h => h.includes('url') || h.includes('link'));
 
       if (titleIdx === -1) {
-        this.showToast('Could not find a "Title" column in your CSV.', 'error');
+        this.showToast('Could not find a "Caption" column in your CSV.', 'error');
         return;
       }
 

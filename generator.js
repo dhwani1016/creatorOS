@@ -941,7 +941,7 @@ Audio: "${selectedCTA}"`;
     };
   },
 
-  generateNicheData: function(username, platform, overrideNiche = null, profileUrl = null) {
+  generateNicheData: function(username, platform, overrideNiche = null, profileUrl = null, userCaption = '') {
     const nameLower = username.toLowerCase();
     let niche = overrideNiche || 'general';
     
@@ -1107,7 +1107,7 @@ Audio: "${selectedCTA}"`;
       if (isSinglePost && i === 0) {
         postUrl = profileUrl;
         const typeFolder = postType === 'Image' ? 'p' : 'reel';
-        postTitle = `instagram.com/${typeFolder}/${postShortcode}/`;
+        postTitle = userCaption.trim() || `instagram.com/${typeFolder}/${postShortcode}/`;
         type = postType;
       } else {
         postUrl = type === 'Image' ? baseProfileUrl : (baseProfileUrl.endsWith('/') ? baseProfileUrl + 'reels/' : baseProfileUrl + '/reels/');
